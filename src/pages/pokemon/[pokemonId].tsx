@@ -1,4 +1,4 @@
-import { Title, Text, Container } from "@mantine/core";
+import { Title, Text, Container, Progress, Stack, Group } from "@mantine/core";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { Pokemon } from "../../interfaces/interfaces";
@@ -11,12 +11,21 @@ const SinglePokemon = () => {
   const { data } = useSWR<Pokemon>(["slug-pokemon", pokemonId], () =>
     fetchPokemonById(+(pokemonId as string))
   );
-  console.log(pokemonId);
+
+  if(typeof data === "undefined") {
+    return <Text>Loading...</Text>
+  }
+
   return (
     <Container>
       <Title>
-        This is Single Pokemon page you know, do the detail view b*tch
+        {data.name}
       </Title>
+      <Stack>
+
+      {data.stats.map((stat) => ( <Progress key={stat.stat.name} value={stat.base_stat} />
+    ))}
+      </Stack>
       <Text>Id pokemon {pokemonId}</Text>
     </Container>
   );
