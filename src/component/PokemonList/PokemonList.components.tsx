@@ -10,6 +10,9 @@ const COLORS_KEY = {
   FLY: "blue",
   NORMAL: "gray",
   BUG: "lime",
+  ELECTRIC: "yellow",
+  GROUND: "sand",
+  FAIRY: "pink"
 };
 
 export const SingleCard = ({ pokemon }: PokemonCardProps) => {
