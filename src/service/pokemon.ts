@@ -9,7 +9,7 @@ export const fetchAllPokemon = async (): Promise<Pokemon[]> => {
   try {
     const {
       data: { results },
-    } = await axios.get<AllPokemonsDto>(`${BASE_URL}/pokemon`);
+    } = await axios.get<AllPokemonsDto>(`${BASE_URL}/pokemon?offset=0&limit=40`);
 
     const allPokemons: Pokemon[] = [];
 
@@ -28,6 +28,6 @@ export const fetchAllPokemon = async (): Promise<Pokemon[]> => {
 };
 
 export const fetchPokemonById = async (pokemonId: number) : Promise<Pokemon> => {
-    const {data} = await axios.get<Pokemon>(`${BASE_URL}/pokemon/${pokemonId}}`)
+    const { data } = await axios.get<Pokemon>(`${BASE_URL}/pokemon/${pokemonId}`)
     return data
 }
