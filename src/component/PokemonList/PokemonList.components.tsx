@@ -1,19 +1,8 @@
 import { Card, Title, Stack, Group, Badge, Image } from "@mantine/core";
 import { useRouter } from "next/router";
 import { Pokemon } from "../../interfaces/interfaces";
+import PokemonTypeBadge from "../PokemonTypeBadge/PokemonTypeBadge";
 import { PokemonCardProps } from "./PokemonList.types";
-const COLORS_KEY = {
-  GRASS: "green",
-  POISON: "grape",
-  FIRE: "red",
-  WATER: "cyan",
-  FLY: "blue",
-  NORMAL: "gray",
-  BUG: "lime",
-  ELECTRIC: "yellow",
-  GROUND: "sand",
-  FAIRY: "pink"
-};
 
 export const SingleCard = ({ pokemon }: PokemonCardProps) => {
   const router = useRouter()
@@ -36,16 +25,7 @@ export const SingleCard = ({ pokemon }: PokemonCardProps) => {
         <Group>
           {pokemon.types.map((T) => {
             return (
-              <Badge
-                key={T.slot}
-                color={
-                  COLORS_KEY[
-                    T.type.name.toUpperCase() as keyof typeof COLORS_KEY
-                  ]
-                }
-              >
-                {T.type.name}
-              </Badge>
+              <PokemonTypeBadge key={T.type.name} pokemonType={T} />
             );
           })}
         </Group>
