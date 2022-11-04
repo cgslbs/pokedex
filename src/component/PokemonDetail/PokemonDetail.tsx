@@ -1,23 +1,9 @@
-import {
-  Badge,
-  Container,
-  Grid,
-  Group,
-  Stack,
-  ThemeIcon,
-  Title,
-  Tooltip,
-  Image,
-  Text,
-} from "@mantine/core";
+import { Container, Group, Stack, Title, Image, Text } from "@mantine/core";
+import { ErrorBoundary } from "react-error-boundary";
 import useSWR from "swr";
 import { Pokemon } from "../../interfaces/interfaces";
 import { fetchPokemonById } from "../../service/pokemon";
-import {
-  PokemonAbilities,
-  PokemonStats,
-  PokemonTypes,
-} from "./PokemonDetail.component";
+import { PokemonAbilities, PokemonDamages, PokemonStats, PokemonTypes } from "./PokemonDetail.component";
 import { usesStyles } from "./PokemonDetail.styled";
 
 const PokemonDetail = ({ pokemonId }: { pokemonId: number }) => {
@@ -44,6 +30,7 @@ const PokemonDetail = ({ pokemonId }: { pokemonId: number }) => {
         <PokemonTypes pokemonTypes={data.types} />
         <PokemonAbilities pokemonAbilities={data.abilities} />
         <PokemonStats pokemonStats={data.stats} />
+        <PokemonDamages pokemonTypes={data.types} />
       </Stack>
     </Container>
   );

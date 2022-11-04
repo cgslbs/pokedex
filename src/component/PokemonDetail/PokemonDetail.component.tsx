@@ -6,6 +6,7 @@ import {
   Title,
   Tooltip,
   Text,
+  HoverCard,
 } from "@mantine/core";
 import {
   IconHeart,
@@ -13,14 +14,20 @@ import {
   IconShield,
   IconSwords,
   IconShieldLock,
-  IconComet, IconEyeOff
+  IconComet,
+  IconEyeOff,
+  IconMultiplier2x,
 } from "@tabler/icons";
 
 import { Stat, Type, Ability } from "../../interfaces/interfaces";
-import useSWR from 'swr';
-import { PokemonAbility } from '../../interfaces/pokemonAbilities';
-import { fetchAllAbilities } from "../../service/pokemon";
+import useSWR from "swr";
+import { PokemonAbility } from "../../interfaces/pokemonAbilities";
+import {
+  fetchAllPokemonAbilities,
+  fetchPokemonType,
+} from "../../service/pokemon";
 import PokemonTypeBadge from "../PokemonTypeBadge/PokemonTypeBadge";
+import { PokemonType } from "../../interfaces/pokemonType";
 const COLOR_STATS = {
   HP: "lime",
   ATTACK: "red",
@@ -44,23 +51,42 @@ export const PokemonAbilities = ({
 }: {
   pokemonAbilities: Ability[];
 }) => {
-    const {data} = useSWR<PokemonAbility[]>('allAbilities', () => fetchAllAbilities())
+  const { data } = useSWR<PokemonAbility[]>(
+    ["allAbilities", pokemonAbilities],
+    () => fetchAllPokemonAbilities(pokemonAbilities)
+  );
 
-    console.log('abilities', data)
   return (
     <Stack>
       <Title order={6}>abilities</Title>
       <Group>
-        {pokemonAbilities.map((ability) => (
-          <Badge
-            key={ability.ability.name}
-            color={ability.is_hidden ? "dark" : "cyan"}
-            variant="filled"
-            leftSection={ability.is_hidden ? <IconEyeOff size="12" style={{marginTop: '5px'} } /> : ''}
-          >
-            {ability.ability.name}
-          </Badge>
-        ))}
+        {pokemonAbilities.map((ability) => {
+          const abilityDescritption = data
+            ?.find((T) => T.name === ability.ability.name)
+            ?.effect_entries.find((entry) => entry.language.name === "en");
+          return (
+            <HoverCard key={ability.ability.name} width={250} shadow="sm">
+              <HoverCard.Target>
+                <Badge
+                  color={ability.is_hidden ? "dark" : "cyan"}
+                  variant="filled"
+                  leftSection={
+                    ability.is_hidden ? (
+                      <IconEyeOff size="12" style={{ marginTop: "5px" }} />
+                    ) : (
+                      ""
+                    )
+                  }
+                >
+                  {ability.ability.name}
+                </Badge>
+              </HoverCard.Target>
+              <HoverCard.Dropdown>
+                <Text size="sm">{abilityDescritption?.effect}</Text>
+              </HoverCard.Dropdown>
+            </HoverCard>
+          );
+        })}
       </Group>
     </Stack>
   );
@@ -72,7 +98,7 @@ export const PokemonTypes = ({ pokemonTypes }: { pokemonTypes: Type[] }) => {
       <Title order={6}>types</Title>
       <Group>
         {pokemonTypes.map((type) => (
-          <PokemonTypeBadge key={type.type.name} pokemonType={type} />
+          <PokemonTypeBadge key={type.type.name} pokemonType={type.type.name} />
         ))}
       </Group>
     </Stack>
@@ -117,6 +143,33 @@ export const PokemonStats = ({ pokemonStats }: { pokemonStats: Stat[] }) => {
           );
         })}
       </Group>
+    </Stack>
+  );
+};
+
+export const PokemonDamages = ({ pokemonTypes }: { pokemonTypes: Type[] }) => {
+  const { data } = useSWR<PokemonType[]>(["allTypes", pokemonTypes], () =>
+    fetchPokemonType(pokemonTypes)
+  );
+  console.log("data", data);
+
+  return (
+    <Stack>
+      <Title order={6}>damages</Title>
+        {pokemonTypes.map((type) => {
+          const damageByType = data?.find((T) => T.name === type.type.name);
+          return (
+            <Group key={type.type.name}>
+              <PokemonTypeBadge key={type.type.name} pokemonType={type.type.name} />
+              <ThemeIcon radius="xl" size="md">
+                <IconMultiplier2x size={20} />
+              </ThemeIcon>
+              {damageByType?.damage_relations.double_damage_from.map((T) => {return (
+                <PokemonTypeBadge key={T.name} pokemonType={T.name} />
+              )})}
+            </Group>
+          );
+        })}
     </Stack>
   );
 };
