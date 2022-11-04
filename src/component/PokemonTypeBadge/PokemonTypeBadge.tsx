@@ -11,27 +11,28 @@ const COLORS_KEY = {
     BUG: "lime",
     ELECTRIC: "yellow",
     ROCK: "rock",
-    FAIRY: "pink",
+    FAIRY: "corail",
     FIGHTING: "orange",
-    PSYCHIC: "corail",
+    PSYCHIC: "pink",
     FLYING: "indigo",
     DRAGON: "dragon",
     STEEL: "steel",
-    GROUND: "sand"
+    GROUND: "sand",
+    GHOST: "violet"
   };
 
   
-const PokemonTypeBadge = ({pokemonType}: {pokemonType : Type}) => {
+const PokemonTypeBadge = ({pokemonType}: {pokemonType : string}) => {
     return (
       <Badge
-      key={pokemonType.slot}
+      key={pokemonType}
       color={
         COLORS_KEY[
-          pokemonType.type.name.toUpperCase() as keyof typeof COLORS_KEY
+          pokemonType.toUpperCase() as keyof typeof COLORS_KEY
         ]
       }
     >
-      {pokemonType.type.name}
+      {pokemonType}
     </Badge>
     )
 
