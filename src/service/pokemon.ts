@@ -1,6 +1,7 @@
 import axios from "axios";
-import { AllPokemonsDto, Pokemon, Ability } from "../interfaces/interfaces";
+import { AllPokemonsDto, Pokemon, Ability, Type } from "../interfaces/interfaces";
 import { AllAbilitiesDto, PokemonAbility } from "../interfaces/pokemonAbilities";
+import { PokemonType } from "../interfaces/pokemonType";
 
 // Set config defaults when creating the instance
 
@@ -28,27 +29,28 @@ export const fetchAllPokemon = async (): Promise<Pokemon[]> => {
   }
 };
 
-export const fetchAllAbilities = async (): Promise<PokemonAbility[]> => {
-  try {
-    const { data: {results} } = await axios.get<AllAbilitiesDto>(`${BASE_URL}/ability?limit=60&offset=0`);
-    
-    const allAbilities: PokemonAbility[] = [];
-
-    for(const abilityResponse of results){
-      const { data} = await axios.get<PokemonAbility>(abilityResponse.url);
-      allAbilities.push(data)
-    }
-
-    return allAbilities;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message);
-    }
-    return [];
-  }
-};
-
 export const fetchPokemonById = async (pokemonId: number): Promise<Pokemon> => {
   const { data } = await axios.get<Pokemon>(`${BASE_URL}/pokemon/${pokemonId}`);
   return data;
 };
+
+export const fetchAllPokemonAbilities = async (pokemonAbilities:Ability[] ) : Promise<PokemonAbility[]> => {
+  
+  const currentPokemonAbilities : PokemonAbility[] = []
+  for (const abilityPokemon of pokemonAbilities){
+    const { data } = await axios.get<PokemonAbility>(`${abilityPokemon.ability.url}`);
+    currentPokemonAbilities.push(data);
+  }
+
+  return currentPokemonAbilities
+}
+
+export const fetchPokemonType = async (pokemonTypes: Type[]) => {
+  const currentPokemonTypes : PokemonType[] = [];
+  for(const typePokemon of pokemonTypes){
+    const { data } = await axios.get<PokemonType>(`${typePokemon.type.url}`);
+    currentPokemonTypes.push(data);
+  }
+
+  return currentPokemonTypes
+}
