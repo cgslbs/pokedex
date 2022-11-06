@@ -45,7 +45,7 @@ export const fetchAllPokemonAbilities = async (pokemonAbilities:Ability[] ) : Pr
   return currentPokemonAbilities
 }
 
-export const fetchPokemonType = async (pokemonTypes: Type[]) => {
+export const fetchPokemonType = async (pokemonTypes: Type[])  : Promise<PokemonType[]> => {
   const currentPokemonTypes : PokemonType[] = [];
   for(const typePokemon of pokemonTypes){
     const { data } = await axios.get<PokemonType>(`${typePokemon.type.url}`);
