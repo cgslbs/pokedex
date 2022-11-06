@@ -7,6 +7,9 @@ import {
   Tooltip,
   Text,
   HoverCard,
+  Grid,
+  Box,
+  Center,
 } from "@mantine/core";
 import {
   IconHeart,
@@ -17,6 +20,8 @@ import {
   IconComet,
   IconEyeOff,
   IconMultiplier2x,
+  IconMultiplier05x,
+  IconCircleOff,
 } from "@tabler/icons";
 
 import { Stat, Type, Ability } from "../../interfaces/interfaces";
@@ -152,24 +157,81 @@ export const PokemonDamages = ({ pokemonTypes }: { pokemonTypes: Type[] }) => {
     fetchPokemonType(pokemonTypes)
   );
   console.log("data", data);
+  let doubleDamageFrom: PokemonType["damage_relations"]["double_damage_from"] =
+    [];
+  let doubleDamageTo: PokemonType["damage_relations"]["double_damage_to"] = [];
+  let halfDamageFrom: PokemonType["damage_relations"]["half_damage_from"] = [];
+  let halfDamageTo: PokemonType["damage_relations"]["half_damage_to"] = [];
+  let noDamageFrom: PokemonType["damage_relations"]["no_damage_from"] = [];
+  let noDamageTo: PokemonType["damage_relations"]["no_damage_to"] = [];
 
   return (
     <Stack>
       <Title order={6}>damages</Title>
-        {pokemonTypes.map((type) => {
-          const damageByType = data?.find((T) => T.name === type.type.name);
-          return (
-            <Group key={type.type.name}>
-              <PokemonTypeBadge key={type.type.name} pokemonType={type.type.name} />
+      {pokemonTypes.map((type) => {
+        if (data !== undefined) {
+          const allDamages = data.find((T) => T.name === type.type.name);
+          console.log("damageeee", allDamages);
+          if (allDamages !== undefined) {
+            doubleDamageFrom.concat(
+              allDamages.damage_relations.double_damage_from
+            );
+            doubleDamageTo.concat(allDamages.damage_relations.double_damage_to);
+            halfDamageFrom.concat(allDamages.damage_relations.half_damage_from);
+            halfDamageTo.concat(allDamages.damage_relations.half_damage_to);
+            noDamageFrom.concat(allDamages.damage_relations.no_damage_from);
+            noDamageTo.concat(allDamages.damage_relations.no_damage_to);
+          }
+        }
+
+        return (
+          <Grid justify="center" key={type.type.name}>
+            <Grid.Col span={12} style={{ backgroundColor: "red" }}>
+              <Center>
+                <PokemonTypeBadge
+                  key={type.type.name}
+                  pokemonType={type.type.name}
+                />
+              </Center>
+            </Grid.Col>
+            <Grid.Col span={6} style={{ backgroundColor: "blue" }}>
+              <Text align="center">Damage to</Text>
+            </Grid.Col>
+            <Grid.Col span={6} style={{ backgroundColor: "green" }}>
+              <Text align="center">Damage From</Text>
+            </Grid.Col>
+            <Grid.Col span={2} style={{ backgroundColor: "red" }}>
               <ThemeIcon radius="xl" size="md">
                 <IconMultiplier2x size={20} />
               </ThemeIcon>
-              {damageByType?.damage_relations.double_damage_from.map((T) => {return (
-                <PokemonTypeBadge key={T.name} pokemonType={T.name} />
-              )})}
-            </Group>
-          );
-        })}
+            </Grid.Col>
+            <Grid.Col span={5}>
+              {doubleDamageTo.map((dmg) => (
+                <PokemonTypeBadge key={dmg.name} pokemonType={dmg.name} />
+              ))}
+            </Grid.Col>
+            <Grid.Col span={5}>
+              {doubleDamageFrom.map((dmg) => (
+                <PokemonTypeBadge key={dmg.name} pokemonType={dmg.name} />
+              ))}
+            </Grid.Col>
+            <Grid.Col span={2}>
+              <ThemeIcon radius="xl" size="md">
+                <IconMultiplier05x size={20} />
+              </ThemeIcon>
+            </Grid.Col>
+            <Grid.Col span={5}></Grid.Col>
+            <Grid.Col span={5}></Grid.Col>
+            <Grid.Col span={2}>
+              <ThemeIcon radius="xl" size="md">
+                <IconCircleOff size={20} />
+              </ThemeIcon>
+            </Grid.Col>
+            <Grid.Col span={5}></Grid.Col>
+            <Grid.Col span={5}></Grid.Col>
+          </Grid>
+        );
+      })}
     </Stack>
   );
 };

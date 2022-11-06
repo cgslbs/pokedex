@@ -12,10 +12,9 @@ const Home: NextPage = () => {
   return (
     <div>
       <ErrorBoundary fallback={<Text>Error</Text>}>
-
-      <Suspense fallback={<Text>Loading page...</Text>}>
-        <PokemonList />
-      </Suspense>
+        <Suspense fallback={<Text>Loading page...</Text>}>
+          <PokemonList />
+        </Suspense>
       </ErrorBoundary>
     </div>
   );
