@@ -16,11 +16,10 @@ const PokemonList = () => {
   });
 
   return (
-    <ErrorBoundary fallback={<Title>erreur</Title>}>
-      <Container>
+    <Container>
+      <ErrorBoundary fallback={<Title>erreur</Title>}>
         <Title order={1}>Pokéflex</Title>
         <div>Header</div>
-
         <Grid gutter="md">
           {data!.map((pokemon) => (
             <Grid.Col span={4} key={pokemon.id}>
@@ -30,8 +29,8 @@ const PokemonList = () => {
             </Grid.Col>
           ))}
         </Grid>
-      </Container>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </Container>
   );
 };
 
