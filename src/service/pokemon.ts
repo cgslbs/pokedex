@@ -29,6 +29,18 @@ export const fetchAllPokemon = async (): Promise<Pokemon[]> => {
   }
 };
 
+export const fetchAllTypes = async () => {
+  try {
+    const { data } = await axios.get(`${BASE_URL}/type`);
+    return data
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error.message);
+    }
+    return []
+  }
+}
+
 export const fetchPokemonById = async (pokemonId: number): Promise<Pokemon> => {
   const { data } = await axios.get<Pokemon>(`${BASE_URL}/pokemon/${pokemonId}`);
   return data;
