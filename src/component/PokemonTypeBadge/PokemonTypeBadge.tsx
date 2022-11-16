@@ -19,6 +19,7 @@ const COLORS_KEY = {
   STEEL: "steel",
   GROUND: "sand",
   GHOST: "violet",
+  DARK: "dark"
 };
 
 const PokemonTypeBadge = ({ pokemonType }: { pokemonType: string }) => {
