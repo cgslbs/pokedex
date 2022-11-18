@@ -1,4 +1,5 @@
-export interface PokemonTypeBadgeProps {
-    pokemonType: string;
-    variant?: string
+import { BadgeProps } from "@mantine/core";
+
+export interface PokemonTypeBadgeProps extends BadgeProps {
+    pokemontype: string;
 }

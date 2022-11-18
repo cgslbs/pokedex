@@ -1,5 +1,7 @@
 import { Badge } from "@mantine/core";
+import { _Badge } from "@mantine/core/lib/Badge/Badge";
 import { Pokemon, Type } from "../../interfaces/interfaces";
+import { PokemonTypeBadgeProps } from "./PokemonTypeBadge.types";
 
 const COLORS_KEY = {
   GRASS: "green",
@@ -19,16 +21,20 @@ const COLORS_KEY = {
   STEEL: "steel",
   GROUND: "sand",
   GHOST: "violet",
-  DARK: "dark"
+  DARK: "dark",
+  UNKNOWN: "unknown",
+  SHADOW: "shadow",
 };
 
-const PokemonTypeBadge = ({ pokemonType }: { pokemonType: string }) => {
+const PokemonTypeBadge = (props : PokemonTypeBadgeProps) => {
+  const {pokemontype} = props;
   return (
     <Badge
-      key={pokemonType}
-      color={COLORS_KEY[pokemonType.toUpperCase() as keyof typeof COLORS_KEY]}
+    {...props}
+      key={pokemontype}
+      color={COLORS_KEY[pokemontype.toUpperCase() as keyof typeof COLORS_KEY]}
     >
-      {pokemonType}
+      {pokemontype === "unknown" ? "???" : pokemontype}
     </Badge>
   );
 };

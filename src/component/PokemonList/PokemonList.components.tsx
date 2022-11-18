@@ -33,7 +33,7 @@ export const SingleCard = ({ pokemon }: PokemonCardProps) => {
         <Group>
           {pokemon.types.map((T) => {
             return (
-              <PokemonTypeBadge key={T.type.name} pokemonType={T.type.name} />
+              <PokemonTypeBadge key={T.type.name} pokemontype={T.type.name} />
             );
           })}
         </Group>

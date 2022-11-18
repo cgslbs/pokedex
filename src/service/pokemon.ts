@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AllPokemonsDto, Pokemon, Ability, Type } from "../interfaces/interfaces";
+import { AllPokemonsDto, Pokemon, Ability, Type, Species } from "../interfaces/interfaces";
 import { AllAbilitiesDto, PokemonAbility } from "../interfaces/pokemonAbilities";
 import { PokemonType } from "../interfaces/pokemonType";
 
@@ -29,10 +29,10 @@ export const fetchAllPokemon = async (): Promise<Pokemon[]> => {
   }
 };
 
-export const fetchAllTypes = async () => {
+export const fetchAllTypes = async (): Promise<Species[]> => {
   try {
-    const { data } = await axios.get(`${BASE_URL}/type`);
-    return data
+    const { data: {results} } = await axios.get(`${BASE_URL}/type`);
+    return results
   } catch (error) {
     if (error instanceof Error) {
       console.log(error.message);

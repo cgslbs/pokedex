@@ -24,7 +24,7 @@ import {
   IconCircleOff,
 } from "@tabler/icons";
 
-import { Stat, Type, Ability } from "../../interfaces/interfaces";
+import { Stat, Type, Ability, Species } from "../../interfaces/interfaces";
 import useSWR from "swr";
 import { PokemonAbility } from "../../interfaces/pokemonAbilities";
 import {
@@ -34,6 +34,7 @@ import {
 } from "../../service/pokemon";
 import PokemonTypeBadge from "../PokemonTypeBadge/PokemonTypeBadge";
 import { PokemonType } from "../../interfaces/pokemonType";
+import { IAllDamages } from "./PokemonDetail.types";
 const COLOR_STATS = {
   HP: "lime",
   ATTACK: "red",
@@ -52,6 +53,12 @@ const ICON_STATS = {
   SPEED: IconComet,
 };
 
+const DMG_RELATION = {
+  DOUBLE: "double",
+  HALF: "half",
+  NONE: "none"
+}
+
 export const PokemonAbilities = ({
   pokemonAbilities,
 }: {
@@ -59,7 +66,7 @@ export const PokemonAbilities = ({
 }) => {
   const { data } = useSWR<PokemonAbility[]>(
     ["allAbilities", pokemonAbilities],
-    () => fetchAllPokemonAbilities(pokemonAbilities)
+    () => fetchAllPokemonAbilities(pokemonAbilities), {suspense: true}
   );
 
   return (
@@ -104,7 +111,7 @@ export const PokemonTypes = ({ pokemonTypes }: { pokemonTypes: Type[] }) => {
       <Title order={6}>types</Title>
       <Group>
         {pokemonTypes.map((type) => (
-          <PokemonTypeBadge key={type.type.name} pokemonType={type.type.name} />
+          <PokemonTypeBadge key={type.type.name} pokemontype={type.type.name} />
         ))}
       </Group>
     </Stack>
@@ -155,23 +162,39 @@ export const PokemonStats = ({ pokemonStats }: { pokemonStats: Stat[] }) => {
 
 
 export const PokemonDamages = ({ pokemonTypes }: { pokemonTypes: Type[] }) => {
-  const { data } = useSWR<PokemonType[]>(["allPokemonTypes", pokemonTypes], () =>
-    fetchPokemonType(pokemonTypes)
+  const { data: allPokemon } = useSWR<Species[]>(["allPokemonTypes"], () =>
+  fetchAllTypes(), {suspense: true}
   );
-  const typeRes = useSWR(["allTypes"], () => fetchAllTypes())
-  console.log('types', typeRes.data.results);
-  const allDamages : PokemonType['damage_relations'][] = []
-  data?.forEach((type) => allDamages.push(type.damage_relations))
-  const damageTypeFrom = [];
-  const damageTypeTo = [];
+
+  const { data : currentPokemonType } = useSWR<PokemonType[]>(["currentPokemonTypes", pokemonTypes], () => fetchPokemonType(pokemonTypes), {suspense: true});
+  const allDamageFrom : IAllDamages[] = []
+
+  currentPokemonType?.map((type) => {
+    type.damage_relations.double_damage_from.map((dmg_from) => {
+      allDamageFrom.push({dmgType: DMG_RELATION.DOUBLE, pkmType: dmg_from.name })
+    })
+    type.damage_relations.half_damage_from.map((dmg_from) => {
+      allDamageFrom.push({dmgType: DMG_RELATION.HALF, pkmType: dmg_from.name })
+    })
+    type.damage_relations.no_damage_from.map((dmg_from) => {
+      allDamageFrom.push({dmgType: DMG_RELATION.NONE, pkmType: dmg_from.name })
+    })
+  })
+
+  console.log("all damages askip", allDamageFrom)
+
+  // for all pokemon type, find damage_relations
+  // concat if pokemon type length is greater than 1
+  // double damage from 
+  // est-ce que je dois faire un tableau à double dimension là????
 
   return (
     <Stack>
-      <Title order={6}>Effectiveness types</Title>
-      <Grid>
-        {typeRes.data.results?.map((type) => (
-          <Grid.Col key={type.name}>
-            <Text>{type.name}</Text>
+      <Title order={6}>Weaknesses</Title>
+      <Grid grow>
+        {allPokemon?.filter((type) => type.name !== "unknown" && type.name !== "shadow").map((type) => (
+          <Grid.Col span={2} key={type.name}>
+            <PokemonTypeBadge variant="filled" radius="xs" size="xs" pokemontype={type.name} />
           </Grid.Col>
         ))}
       </Grid>

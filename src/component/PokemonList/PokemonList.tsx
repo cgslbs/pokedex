@@ -1,4 +1,4 @@
-import { Container, Grid, Title } from "@mantine/core";
+import { Container, Grid, Loader, Title } from "@mantine/core";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -15,13 +15,18 @@ const PokemonList = () => {
     suspense: true,
   });
 
+
+  if(data === undefined) {
+    return <Loader />;
+  }
+
   return (
     <Container>
       <ErrorBoundary fallback={<Title>erreur</Title>}>
         <Title order={1}>Pokéflex</Title>
         <div>Header</div>
         <Grid gutter="md">
-          {data!.map((pokemon) => (
+          {data.map((pokemon) => (
             <Grid.Col span={4} key={pokemon.id}>
               <Suspense fallback={<Title>Loading</Title>}>
                 <SingleCard pokemon={pokemon} />

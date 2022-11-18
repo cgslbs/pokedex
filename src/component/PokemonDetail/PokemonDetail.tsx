@@ -30,6 +30,7 @@ const PokemonDetail = ({ pokemonId }: { pokemonId: number }) => {
         <PokemonTypes pokemonTypes={data.types} />
         <PokemonAbilities pokemonAbilities={data.abilities} />
         <PokemonStats pokemonStats={data.stats} />
+        
         <PokemonDamages pokemonTypes={data.types} />
       </Stack>
     </Container>
