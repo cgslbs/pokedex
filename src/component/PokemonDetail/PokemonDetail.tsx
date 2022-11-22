@@ -16,7 +16,7 @@ const PokemonDetail = ({ pokemonId }: { pokemonId: number }) => {
   }
 
   return (
-    <Container className={classes.pokemonProfile} size="xs">
+    <Container className={classes.pokemonProfile}>
       <Title transform="capitalize">{data.name}</Title>
       <Group position="center">
         <Image

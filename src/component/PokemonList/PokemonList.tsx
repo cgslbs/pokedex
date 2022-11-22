@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import useSWR from "swr";
-import { Pokemon } from '../../interfaces/interfaces';
+import { Pokemon } from "../../interfaces/interfaces";
 import { fetchAllPokemon } from "../../service/pokemon";
 
 const SingleCard = dynamic(
@@ -15,25 +15,22 @@ const PokemonList = () => {
     suspense: true,
   });
 
-
-  if(data === undefined) {
+  if (data === undefined) {
     return <Loader />;
   }
 
   return (
-    <Box>
+    <Grid>
       <ErrorBoundary fallback={<Title>erreur</Title>}>
-        <Grid>
         {data.map((pokemon) => (
           <Grid.Col span={4} key={pokemon.id}>
-              <Suspense fallback={<Title>Loading</Title>}>
-                <SingleCard pokemon={pokemon} />
-              </Suspense>
+            <Suspense fallback={<Title>Loading</Title>}>
+              <SingleCard pokemon={pokemon} />
+            </Suspense>
           </Grid.Col>
-          ))}
-        </Grid>
+        ))}
       </ErrorBoundary>
-    </Box>
+    </Grid>
   );
 };
 

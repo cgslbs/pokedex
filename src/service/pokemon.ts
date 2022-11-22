@@ -41,7 +41,7 @@ export const fetchAllTypes = async (): Promise<Species[]> => {
   }
 }
 
-export const fetchPokemonById = async (pokemonId: number): Promise<Pokemon> => {
+export const fetchPokemonById = async (pokemonId: number | undefined): Promise<Pokemon> => {
   const { data } = await axios.get<Pokemon>(`${BASE_URL}/pokemon/${pokemonId}`);
   return data;
 };

@@ -1,4 +1,4 @@
-import { Autocomplete, createStyles } from "@mantine/core";
+import { createStyles } from "@mantine/core";
 
 export const usesStyles = createStyles((theme)=> ({
     pokemonProfile: {
