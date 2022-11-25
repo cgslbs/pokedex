@@ -12,18 +12,17 @@ const PokemonList = dynamic(
 );
 
 const Home: NextPage = () => {
+  const [currentPokemon, updateCurrentPokemon] = useAtom(selectedPokemonAtom);
 
-  const [currentPokemon, updateCurrentPokemon] = useAtom(selectedPokemonAtom)
-  
   return (
-    <Container py="xs" >
-    <Title order={1}>Pokéflex</Title>
-    <div>Header</div>
+    <Container py="xs">
+      <Title order={1}>Pokéflex</Title>
       <Grid>
         <Grid.Col
           span={8}
           style={{ height: "90vh", overflowY: "scroll", overflowX: "hidden" }}
         >
+          <div style={{height: "100px"}}>Header</div>
           <ErrorBoundary fallback={<Text>Error</Text>}>
             <Suspense fallback={<Text>Loading page...</Text>}>
               <PokemonList />
@@ -31,9 +30,11 @@ const Home: NextPage = () => {
           </ErrorBoundary>
         </Grid.Col>
         <Grid.Col span={4}>
-        <ErrorBoundary fallback={<Text>Error</Text>}>
+          <ErrorBoundary fallback={<Text>Error</Text>}>
             <Suspense fallback={<Text>Loading page...</Text>}>
-              <PokemonDetail pokemonId={currentPokemon !== null ? currentPokemon.id : 1} />
+              <PokemonDetail
+                pokemonId={currentPokemon !== null ? currentPokemon.id : 1}
+              />
             </Suspense>
           </ErrorBoundary>
         </Grid.Col>

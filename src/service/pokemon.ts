@@ -7,11 +7,11 @@ import { PokemonType } from "../interfaces/pokemonType";
 
 const BASE_URL = "https://pokeapi.co/api/v2";
 
-export const fetchAllPokemon = async (): Promise<Pokemon[]> => {
+export const fetchAllPokemon = async (url: string): Promise<Pokemon[]> => {
   try {
     const {
       data: { results },
-    } = await axios.get<AllPokemonsDto>(`${BASE_URL}/pokemon?limit=151&offset=0`);
+    } = await axios.get<AllPokemonsDto>(`${BASE_URL}/pokemon?${url}`);
 
     const allPokemons: Pokemon[] = [];
 
@@ -28,6 +28,8 @@ export const fetchAllPokemon = async (): Promise<Pokemon[]> => {
     return [];
   }
 };
+
+export const scrollFetcher = () => {}
 
 export const fetchAllTypes = async (): Promise<Species[]> => {
   try {

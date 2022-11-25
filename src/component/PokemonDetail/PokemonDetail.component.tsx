@@ -78,7 +78,7 @@ export const PokemonAbilities = ({
             ?.find((T) => T.name === ability.ability.name)
             ?.effect_entries.find((entry) => entry.language.name === "en");
           return (
-            <HoverCard key={ability.ability.name} width={250} shadow="sm">
+            <HoverCard key={ability.ability.name} width={280} shadow="sm">
               <HoverCard.Target>
                 <Badge
                   color={ability.is_hidden ? "dark" : "cyan"}
