@@ -1,8 +1,9 @@
-import { Grid, Loader, Title, Button } from "@mantine/core";
+import { Grid, Loader, Title, Button, Box, Center } from "@mantine/core";
 import dynamic from "next/dynamic";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import useSWRInfinite from "swr/infinite";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import { Pokemon } from "../../interfaces/interfaces";
 import { fetchAllPokemon } from "../../service/pokemon";
@@ -13,55 +14,54 @@ const SingleCard = dynamic(
 
 const PokemonList = () => {
   const [offsetPokemon, setOffsetPokemon] = useState(0);
-  const [isInit, setIsInit] = useState(false);
-  const [currentPokemonList, setCurrentPokemonList] = useState<Pokemon[]>([]);
-
-  let allPokemon : Pokemon[] = []
 
   const getKey = (_limitNumber: number, previousPageData: Pokemon[] | null) => {
     if (previousPageData && previousPageData.length === 0) return null;
-    return `limit=20&offset=${offsetPokemon}`;
+    return `limit=30&offset=${offsetPokemon}`;
   };
 
-  const { data, error, mutate, size, setSize, isValidating } = useSWRInfinite<
-    Pokemon[]
-  >(getKey, fetchAllPokemon, {
-    suspense: true,
-  });
+  const { data, size, setSize } = useSWRInfinite<Pokemon[]>(
+    getKey,
+    fetchAllPokemon,
+    {
+      suspense: true,
+    }
+  );
+
+  const fetchData = () => {
+    setOffsetPokemon(offsetPokemon + 30);
+    setSize(size + 1);
+  };
+
+  const listPokemon = useMemo(
+    () => data?.reduce((prev, nextPokemon) => {
+      return prev.concat(nextPokemon);
+    }),  [data]);
 
   useEffect(() => {
-    if (data === undefined) return;
-    const newValue = allPokemon.concat(data[0]);
-    allPokemon = newValue
-    console.log(newValue)
-    // setCurrentPokemonList(newValue)
-    setIsInit(true);
-  }, [data]);
-
-  if (data === undefined || allPokemon.length === 0) {
-    return <Loader />;
-  }
+    console.log("List changes", listPokemon);
+  }, [listPokemon]);
 
   return (
-    <Grid>
-      <ErrorBoundary fallback={<Title>erreur</Title>}>
-        {allPokemon.map((pokemon) => (
-          <Grid.Col span={4} key={pokemon.id}>
-            <Suspense fallback={<Title>Loading</Title>}>
+    <InfiniteScroll
+      dataLength={listPokemon ? listPokemon.length : 0}
+      next={fetchData}
+      hasMore={true}
+      loader={
+        <Center>
+          <Loader />
+        </Center>
+      }
+    >
+      <Grid>
+        {listPokemon &&
+          listPokemon.map((pokemon) => (
+            <Grid.Col span={4} key={pokemon.id}>
               <SingleCard pokemon={pokemon} />
-            </Suspense>
-          </Grid.Col>
-        ))}
-        <Button
-          onClick={() => {
-            setOffsetPokemon(offsetPokemon + 20);
-            setSize(size + 1);
-          }}
-        >
-          Load More...
-        </Button>
-      </ErrorBoundary>
-    </Grid>
+            </Grid.Col>
+          ))}
+      </Grid>
+    </InfiniteScroll>
   );
 };
 
