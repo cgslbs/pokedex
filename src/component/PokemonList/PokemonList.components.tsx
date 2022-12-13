@@ -1,5 +1,6 @@
 import { Card, Title, Stack, Group, Badge, Image } from "@mantine/core";
 import { useAtom } from "jotai";
+import { openedDialog } from "../../states/openedDialog.states";
 import { selectedPokemonAtom } from "../../states/selectedPokemon.states";
 import PokemonTypeBadge from "../PokemonTypeBadge/PokemonTypeBadge";
 import { PokemonCardProps } from "./PokemonList.types";
@@ -7,12 +8,17 @@ import { PokemonCardProps } from "./PokemonList.types";
 export const SingleCard = ({ pokemon }: PokemonCardProps) => {
 
   const [_currentPokemon, updateCurrentPokemon] = useAtom(selectedPokemonAtom)
+  const [_isOpened, updateIsOpened] = useAtom(openedDialog)
+
   return (
     <Card
       radius="md"
       shadow="sm"
       key={pokemon.id}
-      onClick={ () =>  updateCurrentPokemon(pokemon)}
+      onClick={ () =>{  
+        updateCurrentPokemon(pokemon);
+        updateIsOpened(true)
+      }}
     >
       <Title order={4} align="center" transform="uppercase">
         {pokemon.name}

@@ -1,9 +1,9 @@
-import { Container, Group, Stack, Title, Image, Text } from "@mantine/core";
+import { Container, Group, Stack, Title, Image, Text, Center, Loader } from "@mantine/core";
 import useSWR from "swr";
 import { Pokemon } from "../../interfaces/interfaces";
 import { fetchPokemonById } from "../../service/pokemon";
 import { PokemonAbilities, PokemonStats, PokemonTypes } from "./PokemonDetail.component";
-import { usesStyles } from "./PokemonDetail.styled";
+import { usesStyles } from "./PokemonDetail.styles";
 
 const PokemonDetail = ({ pokemonId }: { pokemonId: number }) => {
   const { classes } = usesStyles();
@@ -12,7 +12,7 @@ const PokemonDetail = ({ pokemonId }: { pokemonId: number }) => {
   );
 
   if (typeof data === "undefined") {
-    return <Text>Loading...</Text>;
+    return <Center><Loader /></Center>;
   }
 
   return (

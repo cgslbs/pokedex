@@ -7,9 +7,6 @@ import {
   Tooltip,
   Text,
   HoverCard,
-  Grid,
-  Box,
-  Center,
 } from "@mantine/core";
 import {
   IconHeart,
@@ -19,22 +16,16 @@ import {
   IconShieldLock,
   IconComet,
   IconEyeOff,
-  IconMultiplier2x,
-  IconMultiplier05x,
-  IconCircleOff,
 } from "@tabler/icons";
 
-import { Stat, Type, Ability, Species } from "../../interfaces/interfaces";
+import { Stat, Type, Ability } from "../../interfaces/interfaces";
 import useSWR from "swr";
 import { PokemonAbility } from "../../interfaces/pokemonAbilities";
 import {
-  fetchAllPokemonAbilities,
-  fetchAllTypes,
-  fetchPokemonType,
+  fetchAllPokemonAbilities
 } from "../../service/pokemon";
 import PokemonTypeBadge from "../PokemonTypeBadge/PokemonTypeBadge";
-import { PokemonType } from "../../interfaces/pokemonType";
-import { IAllDamages } from "./PokemonDetail.types";
+
 const COLOR_STATS = {
   HP: "lime",
   ATTACK: "red",
@@ -52,12 +43,6 @@ const ICON_STATS = {
   SPECIAL_DEFENSE: IconShieldLock,
   SPEED: IconComet,
 };
-
-const DMG_RELATION = {
-  DOUBLE: "double",
-  HALF: "half",
-  NONE: "none"
-}
 
 export const PokemonAbilities = ({
   pokemonAbilities,

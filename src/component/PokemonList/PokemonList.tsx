@@ -1,4 +1,10 @@
-import { Grid, Loader, Title, Button, Box, Center } from "@mantine/core";
+import {
+  Grid,
+  Loader,
+  Text,
+  Center,
+  Skeleton,
+} from "@mantine/core";
 import dynamic from "next/dynamic";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -15,32 +21,35 @@ const SingleCard = dynamic(
 const PokemonList = () => {
   const [offsetPokemon, setOffsetPokemon] = useState(0);
 
-  const getKey = (_limitNumber: number, previousPageData: Pokemon[] | null) => {
-    if (previousPageData && previousPageData.length === 0) return null;
+  const [previousPageData, setPreviousPageData] = useState<Pokemon[]>([]);
+
+  const getKey = (_limitNumber: number, previous: Pokemon[] | null) => {
+    if (!!previous && previous.length === 0) {
+      return null;
+    }
+
     return `limit=30&offset=${offsetPokemon}`;
   };
 
-  const { data, size, setSize } = useSWRInfinite<Pokemon[]>(
-    getKey,
-    fetchAllPokemon,
-    {
-      suspense: true,
-    }
-  );
+  const { data, size, setSize } = useSWRInfinite(getKey, fetchAllPokemon, {
+    suspense: true,
+  });
 
   const fetchData = () => {
     setOffsetPokemon(offsetPokemon + 30);
     setSize(size + 1);
+    if (!!data) {
+      setPreviousPageData((oldState) => [...oldState, ...data.flat()]);
+    }
   };
 
-  const listPokemon = useMemo(
-    () => data?.reduce((prev, nextPokemon) => {
-      return prev.concat(nextPokemon);
-    }),  [data]);
-
-  useEffect(() => {
-    console.log("List changes", listPokemon);
-  }, [listPokemon]);
+  const listPokemon = useMemo(() => {
+    if (!data) {
+      return [];
+    }
+    const flatten = data.flat();
+    return [...previousPageData, ...flatten];
+  }, [data, data?.length, previousPageData, previousPageData.length]);
 
   return (
     <InfiniteScroll
@@ -57,7 +66,13 @@ const PokemonList = () => {
         {listPokemon &&
           listPokemon.map((pokemon) => (
             <Grid.Col span={4} key={pokemon.id}>
-              <SingleCard pokemon={pokemon} />
+              <ErrorBoundary fallback={<Text>Error</Text>}>
+                <Suspense
+                  fallback={<Skeleton height={100} width={100} radius="md" />}
+                >
+                  <SingleCard pokemon={pokemon} />
+                </Suspense>
+              </ErrorBoundary>
             </Grid.Col>
           ))}
       </Grid>
